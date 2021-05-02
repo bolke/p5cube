@@ -1,23 +1,16 @@
 class Boid{
 	constructor(){	
 		this.position = new p5.Vector(0,0);
-		this.speed = new p5.Vector(0,0);	
-		this.stroke = [random(255),random(255),random(255)];
+		this.speed = new p5.Vector(0,0);		
 	}
   
 	target(){ return p5.Vector.add(this.position , this.speed);}
 	step(){this.position = this.target();}
 	moveTo(x,y){this.position.set(x,y);}
-	draw(){		
-		stroke(this.stroke);		
+	draw(){
+		stroke('purple');		
 		strokeWeight(10);
 		point(this.position);
-	}
-	update(){
-		if(random(2)){
-			this.speed.rotate(random(-PI/45,PI/45));
-		}
-		this.step();
 	}
 }
 
@@ -45,48 +38,50 @@ var sides = [
 				new Side(400,400)
 			]
 
-var boids = [];
-var boidCount = 255;
+var boid = new Boid();	
 
-function setup(){   
+function setup() {
 	createCanvas(600, 800);
-	frameRate(30);	
-
-    for(let i=0;i<boidCount;i++){
-		let boid = new Boid();
-		boids[i] = boid;
-		boid.position.x = random(200,400);
-		boid.speed.y = 5;
-		boid.speed.rotate(random(PI+PI));		
-	}
+	frameRate(30);		
+	boid.position.x = random(200,400);
+	boid.speed.y = 5;
+	boid.speed.rotate(random(PI+PI));
 }
 
 function draw() {
-	strokeWeight(1);	
-	stroke('grey');
-	rect(0,0,600,800);
-	for(let i=0;i<6;i++){
-	  sides[i].draw();
+	textSize(32);
+	text(Math.round(boid.position.x) + ":" + Math.round(boid.position.y), 10, 30);	
+	if(!drawSides()){
+		boid.speed.mult(-1);		
 	}
-	for(let i=0;i<boids.length;i++){	
-		if(outsideBorders(boids[i])){
-			boids[i].speed.mult(-1);		
-		}
-		boids[i].update();
-		boids[i].draw();				
-	}	
+	updateBoid();
+	drawBoid();	
 }
 
-function outsideBorders(boid){
-	let result=true;
-	for(let i=0;i<6;i++){		
+function updateBoid(){
+	if(random(2)){
+		boid.speed.rotate(random(-PI/45,PI/45));
+	}
+	boid.step();
+}
+
+function drawSides(){
+	let result=false;
+	for(let i=0;i<6;i++){
+		sides[i].color = 'grey';
 		let distance = p5.Vector.sub(sides[i].position,boid.position);	
 		if((distance.x <= 0) && (distance.x >= -sides[i].size)){		  
-		  if((distance.y <= 0) && (distance.y >= -sides[i].size)){			
-		    return false;
+		  if((distance.y <= 0) && (distance.y >= -sides[i].size)){
+			sides[i].color = 'red';
+		    result=true;
 		  }
-		}		
+		}
+		sides[i].draw();
 	}	
 	return result;
+}
+
+function drawBoid(){
+	boid.draw();
 }
 
