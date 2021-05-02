@@ -167,13 +167,19 @@ function checkBorders(boid){
 
 
 function mouseClicked(event) {	
-	for(let i=0;i<1000;i++){
-	let boid = new Boid();		
-		boid.position.x = event.x;
-		boid.position.y = event.y;
-		boid.speed.x = 5;
-		boid.speed.rotate(random(PI));
-		boid.target = new p5.Vector((boid.position.x + boid.speed.x), (boid.position.y + boid.speed.y));
-	boids[boids.length] = boid;
-	}  	
+    if(boids.length>0){
+		for(let i=0;i<boids.length;i++){
+			boids[i].speed.rotate(PI);
+		}
+	}else{
+		for(let i=0;i<1000;i++){
+		let boid = new Boid();		
+			boid.position.x = event.x;
+			boid.position.y = event.y;
+			boid.speed.x = 5;
+			boid.speed.rotate(random(PI));
+			boid.target = new p5.Vector((boid.position.x + boid.speed.x), (boid.position.y + boid.speed.y));
+		boids[boids.length] = boid;
+		}  	
+	}
 }
